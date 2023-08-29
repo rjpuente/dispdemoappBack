@@ -18,18 +18,28 @@ def process_doc(
         is_local: bool = False,
         question: str = ''
 ):
-    _, loader = os.system(f'curl -o {default_doc_name} {path}'), PyPDFLoader(f"./{default_doc_name}") if not is_local \
+    try:
+        _, loader = os.system(f'curl -o {default_doc_name} {path}'), PyPDFLoader(f"./{default_doc_name}") if not is_local \
         else PyPDFLoader(path)
 
-    doc = loader.load_and_split()
+        doc = loader.load_and_split()
 
-    print(doc[-1])
+        print(doc[-1])
 
-    db = Chroma.from_documents(doc, embedding=OpenAIEmbeddings())
+        db = Chroma.from_documents(doc, embedding=OpenAIEmbeddings())
 
-    qa = RetrievalQA.from_chain_type(llm=OpenAI(), chain_type='stuff', retriever=db.as_retriever())
+        qa = RetrievalQA.from_chain_type(llm=OpenAI(), chain_type='stuff', retriever=db.as_retriever())
 
-    st.write(qa.run(question))
+        respuesta = qa.run(question)
+
+        print("La respuesta es " , str(respuesta))
+
+        return {"message": respuesta}
+
+        
+    except Exception as e:
+        return {"error": str(e)}
+
 
 @app.post("/upload")
 async def upload_pdf(pdfFile: UploadFile = File(...), question: str = None):
