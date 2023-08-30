@@ -4,3 +4,4 @@ chromadb
 openai
 chroma-hnswlib
 tiktoken
+faiss-cpu

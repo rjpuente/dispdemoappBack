@@ -3,7 +3,7 @@ from langchain.document_loaders import PyPDFLoader
 from langchain.llms import OpenAI
 from langchain.document_loaders import PyPDFLoader
 from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
+from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -19,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-os.environ['OPENAI_API_KEY'] = 'clave'
+os.environ['OPENAI_API_KEY'] = 'apikey'
 default_doc_name = 'merged.pdf'
 
 def process_doc(
@@ -37,7 +37,7 @@ def process_doc(
 
         print(doc[-1])
 
-        db = Chroma.from_documents(doc, embedding=OpenAIEmbeddings())
+        db = FAISS.from_documents(doc, embedding=OpenAIEmbeddings())
 
         qa = RetrievalQA.from_chain_type(llm=OpenAI(), chain_type='stuff', retriever=db.as_retriever())
 
