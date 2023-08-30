@@ -6,7 +6,6 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 from fastapi.middleware.cors import CORSMiddleware
-import streamlit as st
 import os
 
 
@@ -20,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = 'clave'
 default_doc_name = 'merged.pdf'
 
 def process_doc(
